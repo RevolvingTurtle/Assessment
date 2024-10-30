@@ -6,11 +6,11 @@ using UnityEngine;
 
 public class Player_Movement : MonoBehaviour
 {
-    public float moveSpeed = 1f;
-    public float jumpForce = 10f;
+    public float moveSpeed = 1f; // Movement speed of the tank
+    public float jumpForce = 10f; // Jumping force of the tank
     private Rigidbody2D rb;
-    private bool isGrounded = false;
-    public bool facingRight = true;
+    private bool isGrounded = false; // Checking if the tank is on the ground
+    public bool facingRight = true; // Checking if the tank is facing right
     private Vector2 movement;
 
     // Start is called before the first frame update
@@ -22,23 +22,21 @@ public class Player_Movement : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        float moveInput = 0; // Movement: Gets the player's movement depending on which key is pressed A/D or Left/Right arrow keys by default, then moves left or right accordingly
+        float moveInput = 0; // Initial horizontal movement, no movement yet
 
-        if (Input.GetKey(KeyCode.D))
+        if (Input.GetKey(KeyCode.D)) // If the D key is pressed, being moving right
         {
             moveInput = 1;
         }
 
-        else if (Input.GetKey(KeyCode.A))
+        else if (Input.GetKey(KeyCode.A)) // If the A key is pressed, begin moving left
         {
             moveInput = -1;
         }
 
-        Debug.Log("Move input: " + moveInput);
+        movement = new Vector2(moveInput * moveSpeed, rb.velocity.y); // Setting the movement velocity
 
-        movement = new Vector2(moveInput * moveSpeed, rb.velocity.y);
-
-        if (moveInput > 0 && !facingRight)
+        if (moveInput > 0 && !facingRight) // Flipping the tank's sprite
         {
             Flip();
         }
@@ -48,23 +46,20 @@ public class Player_Movement : MonoBehaviour
             Flip();
         }
 
-        // Jumping
         if (Input.GetKeyDown(KeyCode.Space) && isGrounded) // Checking to see if the user is grounded when the jump key is pressed, if so then the jump force is applied
         {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce); // Setting the jump velocity
         }
     }
 
     void FixedUpdate()
     {
-        rb.velocity = new Vector2(movement.x, rb.velocity.y);
+        rb.velocity = new Vector2(movement.x, rb.velocity.y); // Applying the horizontal movement
     }
 
-    void Flip ()
+    void Flip () // Flipping the tank's sprite and it's firepoint
     {
         facingRight = !facingRight;
-
-        Debug.Log("now facing rightL " + facingRight);
 
         Vector3 scaler = transform.localScale;
         scaler.x *= -1;
@@ -72,8 +67,7 @@ public class Player_Movement : MonoBehaviour
 
     }
 
-    // Detecting whether the player is touching the ground or not
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnCollisionEnter2D(Collision2D collision) // Detecting whether the player is touching the ground or not for
     {
         if (collision.gameObject.CompareTag("Ground")) 
         {
